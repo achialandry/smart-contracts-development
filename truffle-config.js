@@ -18,12 +18,14 @@
  *
  */
 
-// const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 //
 // const fs = require('fs');
 // const mnemonic = fs.readFileSync(".secret").toString().trim();
 
 module.exports = {
+  // Custom directory to compile to
+  contracts_build_directory: "./client/src/contracts",
   /**
    * Networks define how you connect to your ethereum client and let you set the
    * defaults web3 uses to send transactions. If you don't specify one truffle
@@ -44,8 +46,52 @@ module.exports = {
     development: {
      host: "127.0.0.1",     // Localhost (default: none)
      port: 7545,            // Standard Ethereum port (default: none)
-     network_id: "5777",       // Any network (default: none)
+     network_id: "*",       // Any network (default: none)
     },
+    // Useful for deploying to a public network.
+    // NB: It's important to wrap the provider as a function.
+
+    // provider = new HDWalletProvider({
+    //   mnemonic: mnemonicPhrase,
+    //   providerOrUrl: "http://localhost:8545",
+    //   addressIndex: 5
+    // });
+    // goerli: {
+    //   provider: () =>  {
+    //     const mnemonic = process.env['MNEMONIC'];
+    //     const provider = new HDWalletProvider({
+    //         mnemonic, 
+    //         providerOrUrl: 'http://127.0.0.1:8545'
+    //     });
+    //     return provider;
+    //   },
+    //   network_id: "*"
+    // },
+    goerli: {
+      provider: () =>  {
+        const projectId = process.env['INFURA_PROJECT_ID'];
+        const mnemonic = process.env['MNEMONIC'];
+        const provider = new HDWalletProvider(
+            mnemonic, 
+            `https://goerli.infura.io/v3/${projectId}`
+        );
+        return provider;
+      },
+      network_id: "*"
+    },
+    rinkeby: {
+      provider: () => {
+        const projectId = process.env['INFURA_PROJECT_ID'];
+        const mnemonic = process.env['MNEMONIC'];
+        const provider = new HDWalletProvider(
+            mnemonic, 
+            `https://rinkeby.infura.io/v3/${projectId}`
+        );
+        return provider;
+      },
+      network_id: '*'
+    },
+    // 0xC70BF07D855101Db87515F63124954727B09078e
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
